@@ -2,6 +2,7 @@
 
 package backend;
 
+import static java.lang.System.out;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -22,12 +23,7 @@ public class Controller_a {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("MVCProba1PU");
         EntityManager em = emf.createEntityManager();
         
-        List<Boritek> boritekok = Boritek.getAllBoritek(em);
-        JSONArray boritekokJ = new JSONArray();
-        for(Boritek b : boritekok){
-            JSONObject j = new JSONObject();
-            
-        }
+        
         
 //        Boritek b = em.find(Boritek.class, 3);
 //        System.out.println(b.getCimzet() + "\t" + b.getFelado());
@@ -58,10 +54,10 @@ public class Controller_a {
 //        spq.execute();
 
         // boríék hozzáadása
-        Boritek b = Boritek.addNewBoritek(em, "J1-12", 23, "Peti", "Gergő");
-        if (b != null) {
-            System.out.println("Sikeres hozzáadás!");
-        }
+//        Boritek b = Boritek.addNewBoritek(em, "J1-12", 23, "Peti", "Gergő");
+//        if (b != null) {
+//            System.out.println("Sikeres hozzáadás!");
+//        }
         
 //        List<Boritek> Lista = Boritek.getAllBoritek(em);
 //        for(Boritek l : Lista){

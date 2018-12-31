@@ -1,16 +1,37 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
     <head>
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="main.js"></script>
+        <style>
+            span{
+                display:inline-block;
+                width:150px;
+                overflow:auto;
+            }
+            .txtInput{
+                padding: 10px;
+                margin-bottom: 3px;
+                border-radius: 6px;
+                border: 1px solid deepskyblue;
+                cursor: pointer;
+                background-color: blue;
+                color: white;
+            }
+        </style>
     </head>
     <body onload="betolt()">
+        
+        <div class="login">
+            <input type="text" id="txtFelhasznalonev" placeholder="Felhasználónév" class="txtInput"><br>
+            <input type="password" id="txtJelszo" placeholder="Jelszó" class="txtInput"><br>
+            <input type="text" id="captcha" style="display: none;" value="">
+            <button onclick="login()" class="txtInput">Login</button>
+        </div>
+        
         <div id="adatok"></div>
     </body>
 </html>

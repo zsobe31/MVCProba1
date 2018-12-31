@@ -7,13 +7,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.ParameterMode;
 import javax.persistence.Persistence;
-import javax.persistence.StoredProcedureQuery;
 import org.json.JSONArray;
 import org.json.JSONObject;
 /**
@@ -35,27 +32,71 @@ public class Controller extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         
-        try (PrintWriter out = response.getWriter()) {
+            try {
+            PrintWriter out = response.getWriter(); 
+                                   
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory("MVCProba1PU");
+            EntityManager em = emf.createEntityManager();                        
             
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("MVCProba1PU");
-        EntityManager em = emf.createEntityManager();
-        
-        List<Boritek> boritekok = Boritek.getAllBoritek(em);
-        JSONArray boritekokJ = new JSONArray();
-        for(Boritek b : boritekok){
-            JSONObject j = new JSONObject();
-            j.put("id", b.getId());
-            j.put("cimzett", b.getCimzet());
-            j.put("felado", b.getFelado());
-            j.put("meret", b.getMeret());
-            j.put("ido", b.getIdo());
-            j.put("suly", b.getSuly());
-            boritekokJ.put(j);
+            if(request.getParameter("task").equals("betolt")){
+                List<Boritek> boritekok = Boritek.getAllBoritek(em);
+                JSONArray boritekokJ = new JSONArray();
+                for(Boritek b : boritekok){
+                    JSONObject j = new JSONObject();
+                    j.put("id", b.getId());
+                    j.put("cimzet", b.getCimzet());
+                    j.put("felado", b.getFelado());
+                    j.put("meret", b.getMeret());
+                    j.put("ido", b.getIdo());
+                    j.put("suly", b.getSuly());
+                    boritekokJ.put(j);
+                }
+                out.print(boritekokJ.toString()); 
+            }
+            
+            if(request.getParameter("task").equals("login") && request.getParameter("captcha").equals("")){
+                String user = request.getParameter("username");
+                String passwd = request.getParameter("password");
+                Felhasznalo f = Felhasznalo.login(em, user, passwd);
+                if(f != null){
+                    request.getSession().setAttribute("user", f);
+                    // request.getSession().getAttribute("user"); -> ezt követően így érjük el a sessont
+                    JSONObject j = new JSONObject();
+                    j.put("result", "Üdvözlünk kedves " + f.getFelhasznalonev());
+                    j.put("success", "1");
+                    out.print(j.toString());
+                }
+                else{
+                    JSONObject j = new JSONObject();
+                    j.put("result", "Hibás felhasználónév vagy jelszó!");
+                    j.put("success", "0");
+                    out.print(j.toString());
+                }
+            }
+            
+            
+            // if(request.getParameter....task equals userdata)
+            if(request.getParameter("task").equals("userdata")){
+                JSONObject vissza = new JSONObject();
+                if(request.getSession().getAttribute("user") != null){
+                    Felhasznalo f = (Felhasznalo)request.getSession().getAttribute("user");
+                    vissza.put("success", "1");
+                    vissza.put("nev", f.getFelhasznalonev());
+                }
+                else{
+                    vissza.put("success", "0");
+                }
+                out.print(vissza.toString());
+            }
+            // megnézzük, hogy van-e user nevű session-ünk
+            // request.getSession().getAttribute("user") != null
+            // vissza: success: 1
+            // vissza: success: 0
             
         }
-        out.print(boritekokJ.toString());
-        
-        } 
+        catch(Exception ex){
+            System.out.println("Hiba: " + ex.toString());
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
